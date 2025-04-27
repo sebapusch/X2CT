@@ -16,11 +16,11 @@ def img_to_h5(img_paths: list, out_dir: str):
 
     with h5py.File(os.path.join(out_dir, 'ct_xray_data.h5'), 'w') as f:
         for i, img_data in enumerate(images):
-            f.create_dataset(f'xray{i}', data=img_data)
+            f.create_dataset(f'xray{i + 1}', data=img_data)
 
         # If needed, add dummy CT data too
-        # ct_dummy = np.random.rand(64, 256, 256).astype('float32')
-        # f.create_dataset('ct', data=ct_dummy)
+        ct_dummy = np.random.rand(64, 256, 256).astype('float32')
+        f.create_dataset('ct', data=ct_dummy)
 
 
 if __name__ == '__main__':
