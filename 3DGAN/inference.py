@@ -18,20 +18,30 @@ def run_inference(
         data_root,
         dataset_file,
 ):
+
+    print("cuda is " + ("" if torch.cuda.is_available() else "not ") + "available") 
+
     # Load configuration
     cfg_from_yaml(yml_path)
     opt = merge_dict_and_yaml({
-        'dataset_class': 'align_ct_xray_std',
+        'dataset_class': 'align_ct_xray_views_std',
         'tag': 'd2_multiview2500',
         'data': 'LIDC256',
         'model_class': 'MultiViewCTGAN',
-        'dataset_file': dataset_file,
+        'datasetfile': dataset_file,
         'dataroot': data_root,
+        'check_point': 90,
+        'load_path': None,
+        'latest': False,
+        'verbose': True,
     }, cfg)
 
     # Device
     opt.gpu_ids = [0] if torch.cuda.is_available() else []
     opt.serial_batches = True
+
+    datasetClass, _, dataTestClass, collateClass = get_dataset(opt.dataset_class)
+    opt.data_augmentation = dataTestClass
 
     # Load dataset
     datasetClass, _, _, collateClass = get_dataset(opt.dataset_class)
